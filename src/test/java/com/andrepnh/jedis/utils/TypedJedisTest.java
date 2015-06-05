@@ -6,15 +6,11 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.BDDMockito.*;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
 import org.mockito.MockitoAnnotations;
 import redis.clients.jedis.Jedis;
 
-/**
- *
- * @author André Pinheiro de Melo
- */
 public class TypedJedisTest {
     
     private static final String BIG_DECIMAL_TEST_VALUE = "0.123456789123456789";
@@ -38,250 +34,250 @@ public class TypedJedisTest {
     // GET tests --------------------------------------------------------------
     
     @Test
-    public void getBooleanIgnoresCase() {
-        when(jedis.get("trueKey")).thenReturn("True");
-        when(jedis.get("falseKey")).thenReturn("FALSE");
+    public void shouldIgnoreWhenGetReturnsBooleanWithDifferentCase() {
+        given(jedis.get("trueKey")).willReturn("True");
+        given(jedis.get("falseKey")).willReturn("FALSE");
         
         assertTrue(typedJedis.getBoolean("trueKey").get());
         assertFalse(typedJedis.getBoolean("falseKey").get());
     }
     
     @Test(expected = ConversionException.class)
-    public void getBooleanFailsForInvalidStrings() {
-        when(jedis.get("foo")).thenReturn("a");
+    public void shouldThrowConversionExceptionWhenGetReturnsInvalidBoolean() {
+        given(jedis.get("foo")).willReturn("a");
         
         typedJedis.getBoolean("foo");
     }
     
     @Test
-    public void getBooleanReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyBooleanOptionalWhenGetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.getBoolean("a"));
     }
     
     @Test
-    public void getLongConvertsCorrectly() {
-        when(jedis.get("foo")).thenReturn(String.valueOf(Long.MIN_VALUE));
+    public void shouldConvertWhenGetReturnsLong() {
+        given(jedis.get("foo")).willReturn(String.valueOf(Long.MIN_VALUE));
         
         assertEquals(Long.MIN_VALUE, (long) typedJedis.getLong("foo").get());
     }
     
     @Test(expected = ConversionException.class)
-    public void getLongFailsOnInvalidNumbers() {
-        when(jedis.get("foo")).thenReturn("1.1");
+    public void shouldThrowConversionExceptionWhenGetReturnsInvalidLong() {
+        given(jedis.get("foo")).willReturn("1.1");
         
         typedJedis.getLong("foo");
     }
     
     @Test
-    public void getLongReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyLongOptionalWhenGetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.getLong("a"));
     }
     
     @Test
-    public void getIntegerConvertsCorrectly() {
-        when(jedis.get("foo")).thenReturn(String.valueOf(Integer.MIN_VALUE));
+    public void shouldConvertWhenGetReturnsInteger() {
+        given(jedis.get("foo")).willReturn(String.valueOf(Integer.MIN_VALUE));
         
         assertEquals(Integer.MIN_VALUE, (int) typedJedis.getInteger("foo").get());
     }
     
     @Test(expected = ConversionException.class)
-    public void getIntegerFailsOnInvalidNumbers() {
-        when(jedis.get("foo")).thenReturn("1.1");
+    public void shouldThrowConversionExceptionWhenGetReturnsInvalidInteger() {
+        given(jedis.get("foo")).willReturn("1.1");
         
         typedJedis.getInteger("foo");
     }
     
     @Test
-    public void getIntegerReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyIntegerOptionalWhenGetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.getInteger("a"));
     }
     
     @Test
-    public void getBigIntegerConvertsCorrectly() {
-        when(jedis.get("foo")).thenReturn(BIG_INTEGER_TEST_VALUE);
+    public void shouldConvertWhenGetReturnsBigInteger() {
+        given(jedis.get("foo")).willReturn(BIG_INTEGER_TEST_VALUE);
         
         assertEquals(new BigInteger(BIG_INTEGER_TEST_VALUE), 
                 typedJedis.getBigInteger("foo").get());
     }
     
     @Test(expected = ConversionException.class)
-    public void getBigIntegerFailsOnInvalidNumbers() {
-        when(jedis.get("foo")).thenReturn("1.1");
+    public void shouldThrowConversionExceptionWhenGetReturnsInvalidBigInteger() {
+        given(jedis.get("foo")).willReturn("1.1");
         
         typedJedis.getBigInteger("foo");
     }
     
     @Test
-    public void getBigIntegerReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyBigIntegerOptionalWhenGetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.getBigInteger("a"));
     }
     
     @Test
-    public void getDoubleConvertsCorrectly() {
+    public void shouldConvertWhenGetReturnsDouble() {
         double value = 0.1;
-        when(jedis.get("foo")).thenReturn(String.valueOf(value));
+        given(jedis.get("foo")).willReturn(String.valueOf(value));
         assertEquals(value, typedJedis.getDouble("foo").get(), 
                 DOUBLE_COMPARISON_TOLERANCE);
     }
     
     @Test(expected = ConversionException.class)
-    public void getDoubleFailsOnInvalidNumbers() {
-        when(jedis.get("foo")).thenReturn("a");
+    public void shouldThrowConversionExceptionWhenGetReturnsInvalidDouble() {
+        given(jedis.get("foo")).willReturn("a");
         
         typedJedis.getDouble("foo");
     }
     
     @Test
-    public void getDoubleReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyDoubleOptionalWhenGetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.getDouble("a"));
     }
     
     @Test
-    public void getBigDecimalConvertsCorrectly() {
-        when(jedis.get("foo")).thenReturn(BIG_DECIMAL_TEST_VALUE);
+    public void shouldConvertWhenGetReturnsBigDecimal() {
+        given(jedis.get("foo")).willReturn(BIG_DECIMAL_TEST_VALUE);
         
         assertEquals(new BigDecimal(BIG_DECIMAL_TEST_VALUE), 
                 typedJedis.getBigDecimal("foo").get());
     }
     
     @Test(expected = ConversionException.class)
-    public void getBigDecimalFailsOnInvalidNumbers() {
-        when(jedis.get("foo")).thenReturn("a");
+    public void shouldThrowConversionExceptionWhenGetReturnsInvalidBigDecimal() {
+        given(jedis.get("foo")).willReturn("a");
         
         typedJedis.getBigDecimal("foo");
     }
     
     @Test
-    public void getBigDecimalReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyBigDecimalOptionalWhenGetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.getBigDecimal("a"));
     }
 
     // GETSET tests -----------------------------------------------------------
     
     @Test
-    public void getSetBooleanIgnoresCase() {
-        when(jedis.getSet("trueKey", "true")).thenReturn("True");
-        when(jedis.getSet("falseKey", "false")).thenReturn("FALSE");
+    public void shouldIgnoreWhenGetSetReturnsBooleanWithDifferentCase() {
+        given(jedis.getSet("trueKey", "true")).willReturn("True");
+        given(jedis.getSet("falseKey", "false")).willReturn("FALSE");
         
         assertTrue(typedJedis.getSetBoolean("trueKey", true).get());
         assertFalse(typedJedis.getSetBoolean("falseKey", false).get());
     }
     
     @Test(expected = ConversionException.class)
-    public void getSetBooleanFailsForInvalidStrings() {
-        when(jedis.getSet("foo", "true")).thenReturn("a");
+    public void shouldThrowConversionExceptionWhenGetSetReturnsInvalidBoolean() {
+        given(jedis.getSet("foo", "true")).willReturn("a");
         
         typedJedis.getSetBoolean("foo", true);
     }
     
     @Test
-    public void getSetBooleanReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyBooleanOptionalWhenGetSetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.getSetBoolean("a", true));
     }
     
     @Test
-    public void getSetLongConvertsCorrectly() {
-        when(jedis.getSet("foo", String.valueOf(Long.MAX_VALUE)))
-                .thenReturn(String.valueOf(Long.MIN_VALUE));
+    public void shouldConvertWhenGetSetReturnsLong() {
+        given(jedis.getSet("foo", String.valueOf(Long.MAX_VALUE)))
+                .willReturn(String.valueOf(Long.MIN_VALUE));
         
         assertEquals(Long.MIN_VALUE, (long) typedJedis
                 .getSetLong("foo", Long.MAX_VALUE).get());
     }
     
     @Test(expected = ConversionException.class)
-    public void getSetLongFailsOnInvalidNumbers() {
-        when(jedis.getSet("foo", "1")).thenReturn("1.1");
+    public void shouldThrowConversionExceptionWhenGetSetReturnsInvalidLong() {
+        given(jedis.getSet("foo", "1")).willReturn("1.1");
         
         typedJedis.getSetLong("foo", 1);
     }
     
     @Test
-    public void getSetLongReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyLongOptionalWhenGetSetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.getSetLong("a", 1));
     }
     
     @Test
-    public void getSetIntegerConvertsCorrectly() {
-        when(jedis.getSet("foo", String.valueOf(Integer.MAX_VALUE)))
-                .thenReturn(String.valueOf(Integer.MIN_VALUE));
+    public void shouldConvertWhenGetSetReturnsInteger() {
+        given(jedis.getSet("foo", String.valueOf(Integer.MAX_VALUE)))
+                .willReturn(String.valueOf(Integer.MIN_VALUE));
         
         assertEquals(Integer.MIN_VALUE, (int) typedJedis
                 .getSetInteger("foo", Integer.MAX_VALUE).get());
     }
     
     @Test(expected = ConversionException.class)
-    public void getSetIntegerFailsOnInvalidNumbers() {
-        when(jedis.getSet("foo", "1")).thenReturn("1.1");
+    public void shouldThrowConversionExceptionWhenGetSetReturnsInvalidInteger() {
+        given(jedis.getSet("foo", "1")).willReturn("1.1");
         
         typedJedis.getSetInteger("foo", 1);
     }
     
     @Test
-    public void getSetIntegerReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyIntegerOptionalWhenGetSetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.getSetInteger("a", 1));
     }
     
     @Test
-    public void getSetBigIntegerConvertsCorrectly() {
-        when(jedis.getSet("foo", "1")).thenReturn(BIG_INTEGER_TEST_VALUE);
+    public void shouldConvertWhenGetSetReturnsBigInteger() {
+        given(jedis.getSet("foo", "1")).willReturn(BIG_INTEGER_TEST_VALUE);
         
         assertEquals(new BigInteger(BIG_INTEGER_TEST_VALUE), 
                 typedJedis.getSetBigInteger("foo", BigInteger.ONE).get());
     }
     
     @Test(expected = ConversionException.class)
-    public void getSetBigIntegerFailsOnInvalidNumbers() {
-        when(jedis.getSet("foo", "1")).thenReturn("1.1");
+    public void shouldThrowConversionExceptionWhenGetSetReturnsInvalidBigInteger() {
+        given(jedis.getSet("foo", "1")).willReturn("1.1");
         
         typedJedis.getSetBigInteger("foo", BigInteger.ONE);
     }
     
     @Test
-    public void getSetBigIntegerReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyBigIntegerOptionalWhenGetSetReturnsNull() {
         assertEquals(Optional.empty(), 
                 typedJedis.getSetBigInteger("a", BigInteger.ONE));
     }
     
     @Test
-    public void getSetDoubleConvertsCorrectly() {
+    public void shouldConvertWhenGetSetReturnsDouble() {
         double newValue = 2;
-        when(jedis.getSet("foo", String.valueOf(newValue)))
-                .thenReturn(String.valueOf(0.1));
+        given(jedis.getSet("foo", String.valueOf(newValue)))
+                .willReturn(String.valueOf(0.1));
         
         assertEquals(0.1, typedJedis.getSetDouble("foo", newValue).get(), 
                 DOUBLE_COMPARISON_TOLERANCE);
     }
     
     @Test(expected = ConversionException.class)
-    public void getSetDoubleFailsOnInvalidNumbers() {
+    public void shouldThrowConversionExceptionWhenGetSetReturnsInvalidDouble() {
         double newValue = 1;
-        when(jedis.getSet("foo", String.valueOf(newValue))).thenReturn("a");
+        given(jedis.getSet("foo", String.valueOf(newValue))).willReturn("a");
         
         typedJedis.getSetDouble("foo", newValue);
     }
     
     @Test
-    public void getSetDoubleReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyDoubleOptionalWhenGetSetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.getSetDouble("a", 1));
     }
     
     @Test
-    public void getSetBigDecimalConvertsCorrectly() {
-        when(jedis.getSet("foo", "1")).thenReturn(BIG_DECIMAL_TEST_VALUE);
+    public void shouldConvertWhenGetSetReturnsBigDecimal() {
+        given(jedis.getSet("foo", "1")).willReturn(BIG_DECIMAL_TEST_VALUE);
         
         assertEquals(new BigDecimal(BIG_DECIMAL_TEST_VALUE), 
                 typedJedis.getSetBigDecimal("foo", BigDecimal.ONE).get());
     }
     
     @Test(expected = ConversionException.class)
-    public void getSetBigDecimalFailsOnInvalidNumbers() {
-        when(jedis.getSet("foo", "1")).thenReturn("a");
+    public void shouldThrowConversionExceptionWhenGetSetReturnsInvalidBigDecimal() {
+        given(jedis.getSet("foo", "1")).willReturn("a");
         
         typedJedis.getSetBigDecimal("foo", BigDecimal.ONE);
     }
     
     @Test
-    public void getSetBigBigDecimalReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyBigBigDecimalOptionalWhenGetSetReturnsNull() {
         assertEquals(Optional.empty(), 
                 typedJedis.getSetBigDecimal("a", BigDecimal.ONE));
     }
@@ -289,125 +285,125 @@ public class TypedJedisTest {
     // HGET tests -------------------------------------------------------------
     
     @Test
-    public void hgetBooleanIgnoresCase() {
-        when(jedis.hget("trueKey", "field")).thenReturn("True");
-        when(jedis.hget("falseKey", "field")).thenReturn("FALSE");
+    public void shouldIgnoreWhenHGetReturnsBooleanWithDifferentCase() {
+        given(jedis.hget("trueKey", "field")).willReturn("True");
+        given(jedis.hget("falseKey", "field")).willReturn("FALSE");
         
         assertTrue(typedJedis.hgetBoolean("trueKey", "field").get());
         assertFalse(typedJedis.hgetBoolean("falseKey", "field").get());
     }
     
     @Test(expected = ConversionException.class)
-    public void hgetBooleanFailsForInvalidStrings() {
-        when(jedis.hget("foo", "field")).thenReturn("a");
+    public void shouldThrowConversionExceptionWhenHGetReturnsInvalidBoolean() {
+        given(jedis.hget("foo", "field")).willReturn("a");
         
         typedJedis.hgetBoolean("foo", "field");
     }
     
     @Test
-    public void hgetBooleanReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyBooleanOptionalWhenHGetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.hgetBoolean("a", "field"));
     }
     
     @Test
-    public void hgetLongConvertsCorrectly() {
-        when(jedis.hget("foo", "field"))
-                .thenReturn(String.valueOf(Long.MIN_VALUE));
+    public void shouldConvertWhenHGetReturnsLong() {
+        given(jedis.hget("foo", "field"))
+                .willReturn(String.valueOf(Long.MIN_VALUE));
         
         assertEquals(Long.MIN_VALUE, 
                 (long) typedJedis.hgetLong("foo", "field").get());
     }
     
     @Test(expected = ConversionException.class)
-    public void hgetLongFailsOnInvalidNumbers() {
-        when(jedis.hget("foo", "field")).thenReturn("1.1");
+    public void shouldThrowConversionExceptionWhenHGetReturnsInvalidLong() {
+        given(jedis.hget("foo", "field")).willReturn("1.1");
         
         typedJedis.hgetLong("foo", "field");
     }
     
     @Test
-    public void hgetLongReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyLongOptionalWhenHGetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.hgetLong("a", "field"));
     }
     
     @Test
-    public void hgetIntegerConvertsCorrectly() {
-        when(jedis.hget("foo", "field"))
-                .thenReturn(String.valueOf(Integer.MIN_VALUE));
+    public void shouldConvertWhenHGetReturnsInteger() {
+        given(jedis.hget("foo", "field"))
+                .willReturn(String.valueOf(Integer.MIN_VALUE));
         
         assertEquals(Integer.MIN_VALUE, 
                 (int) typedJedis.hgetInteger("foo", "field").get());
     }
     
     @Test(expected = ConversionException.class)
-    public void hgetIntegerFailsOnInvalidNumbers() {
-        when(jedis.hget("foo", "field")).thenReturn("1.1");
+    public void shouldThrowConversionExceptionWhenHGetReturnsInvalidInteger() {
+        given(jedis.hget("foo", "field")).willReturn("1.1");
         
         typedJedis.hgetInteger("foo", "field");
     }
     
     @Test
-    public void hgetIntegerReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyIntegerOptionalWhenHGetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.hgetInteger("a", "foo"));
     }
     
     @Test
-    public void hgetBigIntegerConvertsCorrectly() {
-        when(jedis.hget("foo", "field")).thenReturn(BIG_INTEGER_TEST_VALUE);
+    public void shouldConvertWhenHGetReturnsBigInteger() {
+        given(jedis.hget("foo", "field")).willReturn(BIG_INTEGER_TEST_VALUE);
         
         assertEquals(new BigInteger(BIG_INTEGER_TEST_VALUE), 
                 typedJedis.hgetBigInteger("foo", "field").get());
     }
     
     @Test(expected = ConversionException.class)
-    public void hgetBigIntegerFailsOnInvalidNumbers() {
-        when(jedis.hget("foo", "field")).thenReturn("1.1");
+    public void shouldThrowConversionExceptionWhenHGetReturnsInvalidBigInteger() {
+        given(jedis.hget("foo", "field")).willReturn("1.1");
         
         typedJedis.hgetBigInteger("foo", "field");
     }
     
     @Test
-    public void hgetBigIntegerReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyBigIntegerOptionalWhenHGetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.hgetBigInteger("a", "field"));
     }
     
     @Test
-    public void hgetDoubleConvertsCorrectly() {
+    public void shouldConvertWhenHGetReturnsDouble() {
         double value = 0.1;
-        when(jedis.hget("foo", "field")).thenReturn(String.valueOf(value));
+        given(jedis.hget("foo", "field")).willReturn(String.valueOf(value));
         assertEquals(value, typedJedis.hgetDouble("foo", "field").get(), 
                 DOUBLE_COMPARISON_TOLERANCE);
     }
     
     @Test(expected = ConversionException.class)
-    public void hgetDoubleFailsOnInvalidNumbers() {
-        when(jedis.hget("foo", "field")).thenReturn("a");
+    public void shouldThrowConversionExceptionWhenHGetReturnsInvalidDouble() {
+        given(jedis.hget("foo", "field")).willReturn("a");
         
         typedJedis.hgetDouble("foo", "field");
     }
     
     @Test
-    public void hgetDoubleReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyDoubleOptionalWhenHGetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.hgetDouble("a", "field"));
     }
     
     @Test
-    public void hgetBigDecimalConvertsCorrectly() {
-        when(jedis.hget("foo", "field")).thenReturn(BIG_DECIMAL_TEST_VALUE);
+    public void shouldConvertWhenHGetReturnsBigDecimal() {
+        given(jedis.hget("foo", "field")).willReturn(BIG_DECIMAL_TEST_VALUE);
         
         assertEquals(new BigDecimal(BIG_DECIMAL_TEST_VALUE), 
                 typedJedis.hgetBigDecimal("foo", "field").get());
     }
     
     @Test(expected = ConversionException.class)
-    public void hgetBigDecimalFailsOnInvalidNumbers() {
-        when(jedis.hget("foo", "field")).thenReturn("a");
+    public void shouldThrowConversionExceptionWhenHGetReturnsInvalidBigDecimal() {
+        given(jedis.hget("foo", "field")).willReturn("a");
         
         typedJedis.hgetBigDecimal("foo", "field");
     }
     
     @Test
-    public void hgetBigDecimalReturnsEmptyOptionalOnKeyNotFound() {
+    public void shouldReturnEmptyBigDecimalOptionalWhenHGetReturnsNull() {
         assertEquals(Optional.empty(), typedJedis.hgetBigDecimal("a", "field"));
     }
 }
