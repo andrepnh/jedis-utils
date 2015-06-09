@@ -20,56 +20,56 @@ try (Jedis jedis = jedisPool.getResource()) {
 
 The current version supports `GET`, `HGET` and `GETSET`, but more commands will be added in future.
 
-## Commands blocks
-Commands blocks are a way of grouping related commands in a single lambda expression. Commands inside a block can be easily reused or refactored to run inside transactions, pipelines or both.
+## Command blocks
+Command blocks are a way of grouping related commands in a single lambda expression. Commands inside a block can be easily reused or refactored to run inside transactions, pipelines or both.
 
 #### Plain commands
 Starting with plain commands, no transactions or pipelines. This:
 ```java
-String compellingArgument = new CommandBlock()
+String compellingRequest = new CommandBlock()
         .using(jedisPool.getResource())
         .call(jedis -> {
-            String argument = Optional.ofNullable(jedis.get("argument"))
+            String request = Optional.ofNullable(jedis.get("request"))
                     .orElse("Give me your extra resources");
-            return argument + "!";
+            return request + "!";
         });	
 ```
 
 ... is the same as:
 ```java
-String compellingArgument;
+String compellingRequest;
 try (Jedis jedis = jedisPool.getResource()) {
-    String argument = Optional.ofNullable(jedis.get("argument"))
+    String request = Optional.ofNullable(jedis.get("request"))
             .orElse("Give me your extra resources");
-    compellingArgument = argument + "!";
+    compellingRequest = request + "!";
 }
 ```
 
 #### Transactions and pipelines
 To make a command block transacted, just add `.transacted()` after `using` and the transaction will be available for consumption in your lambda expression. Notice that you don't have to manage calls to `multi()` and `exec()`.
 ```java
-final Result<String> argument = new Result<>();
+final Result<String> request = new Result<>();
 new CommandBlock()
         .using(jedisPool.getResource())
         .transacted()
         .consume(transaction -> {
-            argument.wrapping(transaction.get("argument"));
+            request.wrapping(transaction.get("request"));
         });	
-String compellingArgument = argument.asOptional()
+String compellingRequest = request.asOptional()
         .orElse("Give me your extra resources") + "!";
 ```
 
 If you want pipelines, just replace `transacted()` with `pipelined()`. If you want both, just add `pipelined()` and this complex chain of commands will run in a pipelined transaction:
 ```java
-final Result<String> argument = new Result<>();
+final Result<String> request = new Result<>();
 new CommandBlock()
         .using(jedisPool.getResource())
         .transacted()
         .pipelined()
         .consume(pipeline -> {
-            argument.wrapping(pipeline.get("argument"));
+            request.wrapping(pipeline.get("request"));
         });	
-String compellingArgument = argument.asOptional()
+String compellingRequest = request.asOptional()
         .orElse("Give me your extra resources") + "!";
 ```
 
