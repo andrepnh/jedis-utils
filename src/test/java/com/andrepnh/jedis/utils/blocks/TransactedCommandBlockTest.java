@@ -1,5 +1,6 @@
-package com.andrepnh.jedis.utils.fluent;
+package com.andrepnh.jedis.utils.blocks;
 
+import com.andrepnh.jedis.utils.blocks.TransactedCommandBlock;
 import java.util.Collections;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -13,9 +14,9 @@ import org.mockito.MockitoAnnotations;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
-public class TransactedCommandsTest extends CommandsTest<TransactedCommands> {
+public class TransactedCommandBlockTest extends CommandsTest<TransactedCommandBlock> {
 
-    private TransactedCommands commands;
+    private TransactedCommandBlock commands;
     
     @Mock
     private Jedis jedis;
@@ -32,7 +33,7 @@ public class TransactedCommandsTest extends CommandsTest<TransactedCommands> {
     
     @Test
     public void shouldWrapCommandsInTransaction() {
-        commands.call(tx -> tx.get("foo"));
+        commands.consume(tx -> tx.get("foo"));
         InOrder inOrder = inOrder(jedis, tx);
         inOrder.verify(jedis).multi();
         inOrder.verify(tx).get("foo");
@@ -41,7 +42,7 @@ public class TransactedCommandsTest extends CommandsTest<TransactedCommands> {
     
     @Test
     public void shouldCloseJedisAfterAllCommands() {
-        commands.call(tx -> tx.get("foo"));
+        commands.consume(tx -> tx.get("foo"));
         verifyJedisClosedAfterAllCommands(jedis);
     }
     
@@ -49,12 +50,12 @@ public class TransactedCommandsTest extends CommandsTest<TransactedCommands> {
     public void shouldReturnTransactionExecOutput() {
         List<Object> execOutput = Collections.nCopies(3, "quetzalcoatl");
         given(tx.exec()).willReturn(execOutput);
-        assertEquals(execOutput, commands.call(tx -> tx.get("1")));
+        assertEquals(execOutput, commands.consume(tx -> tx.get("1")));
     }
 
     @Override
-    TransactedCommands newCommandsUnderTest(Jedis jedisMock) {
-        return new TransactedCommands(jedisMock);
+    TransactedCommandBlock newCommandsUnderTest(Jedis jedisMock) {
+        return new TransactedCommandBlock(jedisMock);
     }
     
 }

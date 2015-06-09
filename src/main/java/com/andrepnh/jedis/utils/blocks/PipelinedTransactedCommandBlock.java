@@ -1,13 +1,13 @@
-package com.andrepnh.jedis.utils.fluent;
+package com.andrepnh.jedis.utils.blocks;
 
 import java.util.List;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Response;
 
-public class PipelinedTransactedCommands extends BlockBasedCommands<Pipeline> {
+public class PipelinedTransactedCommandBlock extends MultiKeyCommandBlock<Pipeline> {
     
-    PipelinedTransactedCommands(Jedis jedis) {
+    PipelinedTransactedCommandBlock(Jedis jedis) {
         super(jedis);
     }
     

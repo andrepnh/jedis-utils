@@ -1,14 +1,15 @@
-package com.andrepnh.jedis.utils.fluent;
+package com.andrepnh.jedis.utils.blocks;
 
+import com.andrepnh.jedis.utils.blocks.PlainCommandBlock;
 import org.junit.Test;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import redis.clients.jedis.Jedis;
 
-public class PlainCommandsTest extends CommandsTest<PlainCommands> {
+public class PlainCommandBlockTest extends CommandsTest<PlainCommandBlock> {
 
-    private PlainCommands simpleCommands;
+    private PlainCommandBlock simpleCommands;
     
     @Mock
     private Jedis jedis;
@@ -32,8 +33,8 @@ public class PlainCommandsTest extends CommandsTest<PlainCommands> {
     }
 
     @Override
-    public PlainCommands newCommandsUnderTest(Jedis jedisMock) {
-        return new PlainCommands(jedisMock);
+    public PlainCommandBlock newCommandsUnderTest(Jedis jedisMock) {
+        return new PlainCommandBlock(jedisMock);
     }
 
 }
