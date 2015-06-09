@@ -1,4 +1,4 @@
-package com.andrepnh.jedis.utils.fluent;
+package com.andrepnh.jedis.utils.blocks;
 
 import static java.util.Objects.requireNonNull;
 import redis.clients.jedis.Response;
