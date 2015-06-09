@@ -1,5 +1,6 @@
-package com.andrepnh.jedis.utils.fluent;
+package com.andrepnh.jedis.utils.blocks;
 
+import com.andrepnh.jedis.utils.blocks.PipelinedTransactedCommandBlock;
 import java.util.Collections;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -15,10 +16,10 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Response;
 
-public class PipelinedTransactedCommandsTest 
-        extends CommandsTest<PipelinedTransactedCommands> {
+public class PipelinedTransactedCommandBlockTest 
+        extends CommandsTest<PipelinedTransactedCommandBlock> {
 
-    private PipelinedTransactedCommands commands;
+    private PipelinedTransactedCommandBlock commands;
     
     @Mock
     private Jedis jedis;
@@ -39,7 +40,7 @@ public class PipelinedTransactedCommandsTest
     
     @Test
     public void shouldWrapCommandsInPipelinedTransaction() {
-        commands.call(pipeline -> pipeline.get("foo"));
+        commands.consume(pipeline -> pipeline.get("foo"));
         InOrder inOrder = inOrder(jedis, pipeline);
         inOrder.verify(jedis).pipelined();
         inOrder.verify(pipeline).multi();
@@ -50,7 +51,7 @@ public class PipelinedTransactedCommandsTest
     
     @Test
     public void shouldCloseJedisAfterAllCommands() {
-        commands.call(pipeline -> pipeline.get("foo"));
+        commands.consume(pipeline -> pipeline.get("foo"));
         verifyJedisClosedAfterAllCommands(jedis);
     }
     
@@ -58,12 +59,12 @@ public class PipelinedTransactedCommandsTest
     public void shouldReturnPipelineExecOutput() {
         given(txResponse.get()).willReturn(Collections.nCopies(3, "pipsqueak"));
         assertEquals(txResponse.get(), 
-                commands.call(pipeline -> pipeline.get("1")));
+                commands.consume(pipeline -> pipeline.get("1")));
     }
 
     @Override
-    PipelinedTransactedCommands newCommandsUnderTest(Jedis jedisMock) {
-        return new PipelinedTransactedCommands(jedisMock);
+    PipelinedTransactedCommandBlock newCommandsUnderTest(Jedis jedisMock) {
+        return new PipelinedTransactedCommandBlock(jedisMock);
     }
 
 }

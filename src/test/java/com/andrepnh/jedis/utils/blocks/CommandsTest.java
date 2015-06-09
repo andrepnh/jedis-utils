@@ -1,5 +1,6 @@
-package com.andrepnh.jedis.utils.fluent;
+package com.andrepnh.jedis.utils.blocks;
 
+import com.andrepnh.jedis.utils.blocks.Commands;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InOrder;

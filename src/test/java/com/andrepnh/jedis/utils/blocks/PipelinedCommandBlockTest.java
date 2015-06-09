@@ -1,5 +1,6 @@
-package com.andrepnh.jedis.utils.fluent;
+package com.andrepnh.jedis.utils.blocks;
 
+import com.andrepnh.jedis.utils.blocks.PipelinedCommandBlock;
 import java.util.Collections;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -14,9 +15,9 @@ import org.mockito.MockitoAnnotations;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 
-public class PipelinedCommandsTest extends CommandsTest<PipelinedCommands> {
+public class PipelinedCommandBlockTest extends CommandsTest<PipelinedCommandBlock> {
 
-    private PipelinedCommands commands;
+    private PipelinedCommandBlock commands;
     
     @Mock
     private Jedis jedis;
@@ -33,7 +34,7 @@ public class PipelinedCommandsTest extends CommandsTest<PipelinedCommands> {
     
     @Test
     public void shouldWrapCommandsInPipeline() {
-        commands.call(pipeline -> pipeline.get("foo"));
+        commands.consume(pipeline -> pipeline.get("foo"));
         InOrder inOrder = inOrder(jedis, pipeline);
         inOrder.verify(jedis).pipelined();
         inOrder.verify(pipeline).get("foo");
@@ -42,7 +43,7 @@ public class PipelinedCommandsTest extends CommandsTest<PipelinedCommands> {
     
     @Test
     public void shouldCloseJedisAfterAllCommands() {
-        commands.call(pipeline -> pipeline.get("foo"));
+        commands.consume(pipeline -> pipeline.get("foo"));
         verifyJedisClosedAfterAllCommands(jedis);
     }
     
@@ -51,12 +52,12 @@ public class PipelinedCommandsTest extends CommandsTest<PipelinedCommands> {
         List<Object> syncAndReturnAllOutput = Collections.nCopies(3, "pipsqueak");
         given(pipeline.syncAndReturnAll()).willReturn(syncAndReturnAllOutput);
         assertEquals(syncAndReturnAllOutput, 
-                commands.call(pipeline -> pipeline.get("1")));
+                commands.consume(pipeline -> pipeline.get("1")));
     }
 
     @Override
-    PipelinedCommands newCommandsUnderTest(Jedis jedisMock) {
-        return new PipelinedCommands(jedisMock);
+    PipelinedCommandBlock newCommandsUnderTest(Jedis jedisMock) {
+        return new PipelinedCommandBlock(jedisMock);
     }
 
 }
