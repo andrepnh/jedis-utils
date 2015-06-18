@@ -6,19 +6,13 @@
 
 package com.andrepnh.jedis.utils.blocks;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Test;
 import org.junit.BeforeClass;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Protocol;
-import redis.clients.jedis.Response;
 
 /**
  *

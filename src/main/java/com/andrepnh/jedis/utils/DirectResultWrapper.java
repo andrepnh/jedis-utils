@@ -1,4 +1,4 @@
-package com.andrepnh.jedis.utils.blocks;
+package com.andrepnh.jedis.utils;
 
 class DirectResultWrapper<T> implements ResultWrapper<T> {
     
