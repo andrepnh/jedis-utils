@@ -1,4 +1,4 @@
-package com.andrepnh.jedis.utils.blocks;
+package com.andrepnh.jedis.utils;
 
 import redis.clients.jedis.Response;
 
