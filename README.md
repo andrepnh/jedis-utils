@@ -115,5 +115,4 @@ responses = execResponses.get();
 
 ## Plans for version 1
 * Support more commands in `TypedJedis`
-* Include basic conversions in `Result`
 * Actual releases, including in maven central :)
