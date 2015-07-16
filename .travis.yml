@@ -2,10 +2,13 @@ language: java
 jdk:
   - oraclejdk8
 before_install:
-- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in secring.gpg.enc -out secring.gpg -d
-- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in pubring.gpg.enc -out pubring.gpg -d
-- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in settings.xml.enc -out settings.xml -d
+  - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in secring.gpg.enc -out secring.gpg -d
+  - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in pubring.gpg.enc -out pubring.gpg -d
+  - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in settings.xml.enc -out settings.xml -d
+  - git config credential.helper "store --file=.git/credentials"
+  - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 script: mvn release:clean release:prepare release:perform -B -e
 env:
   global:
-    secure: PHBwk2zKCFaJSlDuSUq7rO2UWf3ZS/tgPtBalHkpWQWwPX3fnnvmC3NH3Sj9Y3V9FAR7GawzAqB2FG7Jw7yGZXmeq1UYEOAC9an2SSvle6djPIaarOG44vHyAuXLhBdZprxfMcZ+LXFcV9i/BpBWZJdoBSfrY6qTLIE+8NxH9Ycq0ZhvxhMR+1z00e4cyYjVhtkuys93uUDZdtRSqLo56/Lx1oEs9MawMjqhY+XgFKFP494x+ATasxvUG7dU8gLgNotFqakBGld2WEvvzw1IekxHopOwYNpzGKfFGlHohTFt+hP+gLHyw4X4avsSbMTGUs5H6dRUD+ihfsJThTceyPhFayTZ0+Le4c29rZl3IC+B/c/q7tY+lePY4AzyLXHgTLs+fIUYG3Ii+WoSjBBENDI2lRleyJTTzfk3j7kuNfmotUQnmWqD/tDO7cv8OrZNGF9cPG+iJfCWMGaccdHKQg9V7RcJ/zQNYTyhsCXb5Rp8kB6HayO11FiyEIqDtINBvVd/mal06MqQoqL02ZlYnMg+ToP9axkMFBd/OFjDNGvO7oYW9pO/m8etBQweuMnnJ4qmPNQjhpFTXSxtogbwzfkoIGr9HxQKH0Y4L5zHkxlMf6WKO2qRkjf/3j63MJ5jpQU2kHBMMlnq3NvTJYQVhi3ch0M9jZ640MR90S7uOVo=
+    - secure: PHBwk2zKCFaJSlDuSUq7rO2UWf3ZS/tgPtBalHkpWQWwPX3fnnvmC3NH3Sj9Y3V9FAR7GawzAqB2FG7Jw7yGZXmeq1UYEOAC9an2SSvle6djPIaarOG44vHyAuXLhBdZprxfMcZ+LXFcV9i/BpBWZJdoBSfrY6qTLIE+8NxH9Ycq0ZhvxhMR+1z00e4cyYjVhtkuys93uUDZdtRSqLo56/Lx1oEs9MawMjqhY+XgFKFP494x+ATasxvUG7dU8gLgNotFqakBGld2WEvvzw1IekxHopOwYNpzGKfFGlHohTFt+hP+gLHyw4X4avsSbMTGUs5H6dRUD+ihfsJThTceyPhFayTZ0+Le4c29rZl3IC+B/c/q7tY+lePY4AzyLXHgTLs+fIUYG3Ii+WoSjBBENDI2lRleyJTTzfk3j7kuNfmotUQnmWqD/tDO7cv8OrZNGF9cPG+iJfCWMGaccdHKQg9V7RcJ/zQNYTyhsCXb5Rp8kB6HayO11FiyEIqDtINBvVd/mal06MqQoqL02ZlYnMg+ToP9axkMFBd/OFjDNGvO7oYW9pO/m8etBQweuMnnJ4qmPNQjhpFTXSxtogbwzfkoIGr9HxQKH0Y4L5zHkxlMf6WKO2qRkjf/3j63MJ5jpQU2kHBMMlnq3NvTJYQVhi3ch0M9jZ640MR90S7uOVo=
+    - secure: PM7prAGiIZPx8o/ZVOXuoaBpFF7Yr7o/JSB+0445lgdvTtnmGy8MRr50IQpGiwdUCLtlOx9mcmo8hhrARIGZf3/b0RJO04DUKnyDZrQ5CYWnXSTeXRRrcI7SBAAu3ZmWJq+SZIftpqzpSQDsAkZqCRQW9Px/ETJVhb4Ab0Ws9BlGIXcXpPCWO7D1FOcUFc+OFUjUWaTTyz0bdSMaewQj67Axhwmb5ckarB8XPfT0X6oaZ3w8ukteC+p4GO1I2WvhNtLsnSv4hw59YCRzDk2DfXiKmu8x/d1OSkDU52q2J2Msqx2CytMKG/tXRbw0p3pKQX0Rl7GcshwgSh7yvDYSJPzm+qUYcA++8OBWHNzC2vmwyFLkR3YTo2McLaXBkhZf22iZOpe9rkbywioMeluJIMJ3RvIkEU8Q4gjkAWpotfgZaBkJc5ufan2yIdhWXG4C7oVxGzXsjh3NYaDwqnGAxUiGCtHwGL/gTTssieF73vXl/QN+J2hBXZp1BEn4KsGn7BX+ix4NR66kNJnwQs7iU58W2927C9hylUJFAWLjZHHjKy6eYtSTT8FtEMHGj7GFv3VUNTxABGl4PGggxo4bvWHarBENwVi7ZuopA0ut1le3ygeVl1A/XCnXYZaasuYeWEqsSTlfNQ03QSlGZBG2rmPQNNtyaYvpZ4+UlrsVWe8=
