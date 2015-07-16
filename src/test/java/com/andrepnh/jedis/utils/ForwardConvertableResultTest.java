@@ -24,7 +24,7 @@ public class ForwardConvertableResultTest {
 
     @Test(expected = NullPointerException.class)
     public void shouldNotWrapNullJedisResponse() {
-        convertableResult.wrapping((Response) null);
+        convertableResult.wrapping((Response<String>) null);
     }
     
     @Test

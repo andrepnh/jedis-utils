@@ -1,5 +1,5 @@
 # jedis-utils
-A small utility library for jedis, mainly designed for more fluent transactions and pipelines. Java 8+ only.
+A tiny utility library for jedis, mainly designed to make it more fun on Java 8. It manages transactions and pipelines automatically and provides basic type conversion.
 
 ## Command blocks
 Command blocks are a way of grouping related commands in a single lambda expression. Commands inside a block can be refactored to run inside automatically managed transactions, pipelines or both.
@@ -67,6 +67,3 @@ try (Jedis jedis = jedisPool.getResource()) {
 }
 responses = execResponses.get();
 ```
-
-## Plans for version 1
-* Actual releases, including in maven central :)
