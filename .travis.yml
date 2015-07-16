@@ -1,9 +1,9 @@
 language: java
-env:
-  global:
-    secure: F5BNjL4CVA8FyJnAxSo49xwh40nJlfFbuIERdQn1lU9NfVrprjI/2uLwgu6CFh9CsZHUo/xK3KGOKeNTWw/6eP+94a/eJpCp3Rj73IFgcBZrzHu33RG56IynNxWDvIHjuCC+hisDqS7VKJ6OsaEUv9p9mIV0iL6DsOba5Slj1VFc1z86GpPwdln3TlObZrZySiTsq/6l8Pe3YbQq9lgT17OI73sDKtzgmaBT3Ue8Jy5Yq0QzMZnVqr8xiIcqkNK5EK7O0ObQEpEOMLf2XkxtSPN2RuB/lz736+59aGnnE5QCmbrpGAv6hbYQ/SBzwJp+U2cFY/KluxoineNkZkLrYSk13M2amvL8hgmOmcOE54CK/pGEM33limNGbTgYfmWDDd7QTNSo8YQzxNFl/zf2HqNkXXcjmEdd5/ZCUNY/HUmLLBV9fLQ2rQZgUSBH6X1SZqEJvUAnERZ0fMAX8aVgTmgHkOBEQ5dfx98AF0EeBkkuxKotPmapn5BjCXBy9Isyp1iiejqwRphYSuIo9kjHLrcYkWoVG3Ef1GCUufZXnSAAS1sX/sBWLBinE1idjf9MyitvUhdjjj2U41yoYymzaQ4aB7NSsW2zHLmRQHskoxwwra9ih6WNez51aA1/rXETaRg9GWVdeWDUsoi3zRhof2cujELTX19jLEnorjrkYtM=
 before_install:
-- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in secring.gpg.enc -out local.secring.gpg -d
-- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in pubring.gpg.enc -out local.pubring.gpg -d
+- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in secring.gpg.enc -out secring.gpg -d
+- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in pubring.gpg.enc -out pubring.gpg -d
 - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in settings.xml.enc -out settings.xml -d
 script: mvn release:clean release:prepare release:perform -B -e
+env:
+  global:
+    secure: PHBwk2zKCFaJSlDuSUq7rO2UWf3ZS/tgPtBalHkpWQWwPX3fnnvmC3NH3Sj9Y3V9FAR7GawzAqB2FG7Jw7yGZXmeq1UYEOAC9an2SSvle6djPIaarOG44vHyAuXLhBdZprxfMcZ+LXFcV9i/BpBWZJdoBSfrY6qTLIE+8NxH9Ycq0ZhvxhMR+1z00e4cyYjVhtkuys93uUDZdtRSqLo56/Lx1oEs9MawMjqhY+XgFKFP494x+ATasxvUG7dU8gLgNotFqakBGld2WEvvzw1IekxHopOwYNpzGKfFGlHohTFt+hP+gLHyw4X4avsSbMTGUs5H6dRUD+ihfsJThTceyPhFayTZ0+Le4c29rZl3IC+B/c/q7tY+lePY4AzyLXHgTLs+fIUYG3Ii+WoSjBBENDI2lRleyJTTzfk3j7kuNfmotUQnmWqD/tDO7cv8OrZNGF9cPG+iJfCWMGaccdHKQg9V7RcJ/zQNYTyhsCXb5Rp8kB6HayO11FiyEIqDtINBvVd/mal06MqQoqL02ZlYnMg+ToP9axkMFBd/OFjDNGvO7oYW9pO/m8etBQweuMnnJ4qmPNQjhpFTXSxtogbwzfkoIGr9HxQKH0Y4L5zHkxlMf6WKO2qRkjf/3j63MJ5jpQU2kHBMMlnq3NvTJYQVhi3ch0M9jZ640MR90S7uOVo=
