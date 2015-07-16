@@ -12,3 +12,6 @@
 hs_err_pid*
 nb-configuration.xml
 target/
+pubring.gpg
+secring.gpg
+settings.xml

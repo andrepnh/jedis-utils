@@ -1,33 +1,12 @@
 # jedis-utils
-A simple utility library for jedis, targeting java 8. Features include easier management of transactions, pipelines or both and basic conversion of strings returned from commands.
-
-## Typed jedis
-`TypedJedis` is a thin wrapper for `Jedis` that converts some commands output to primitives (wrapped in `Optional`s). Usage is simple:
-```java
-try (Jedis jedis = jedisPool.getResource()) { 
-    TypedJedis typedJedis = new TypedJedis(jedis);
-    Optional<Long> someNumber = typedJedis.hgetLong("myHash", "someField");
-    Optional<Double> anotherNumber = typedJedis.getSetDouble("myKey", 0);
-    try {
-        // This will fail. Any problems during conversion results in ConversionException. 
-        // In this case, problem is anything besides true or false (case ignored).
-        Optional<Boolean> myValue = typedJedis.getBoolean("yak");
-    } catch (ConversionException ex) {
-        // Do something
-    }
-}
-```
-
-The current version supports `GET`, `HGET` and `GETSET`, but more commands will be added in future.
+A tiny utility library for jedis, mainly designed to make it more fun on Java 8. It manages transactions and pipelines automatically and provides basic type conversion.
 
 ## Command blocks
-Command blocks are a way of grouping related commands in a single lambda expression. Commands inside a block can be easily reused or refactored to run inside transactions, pipelines or both.
-
-#### Plain commands
-Starting with plain commands, no transactions or pipelines. This:
+Command blocks are a way of grouping related commands in a single lambda expression. Commands inside a block can be refactored to run inside automatically managed transactions, pipelines or both.
+All command blocks take a `Jedis` instance and a `Consumer`. A simple command block, running outside transaction or pipelines, can take a `Function` if you wish to return values directly:
 ```java
 String compellingRequest = new CommandBlock()
-        .using(jedisPool.getResource())
+        .using(jedisPool.getResource()) // This one is closed after the commands are executed
         .call(jedis -> {
             String request = Optional.ofNullable(jedis.get("request"))
                     .orElse("Give me your extra resources");
@@ -35,31 +14,7 @@ String compellingRequest = new CommandBlock()
         });	
 ```
 
-... is the same as:
-```java
-String compellingRequest;
-try (Jedis jedis = jedisPool.getResource()) {
-    String request = Optional.ofNullable(jedis.get("request"))
-            .orElse("Give me your extra resources");
-    compellingRequest = request + "!";
-}
-```
-
-#### Transactions and pipelines
-To make a command block transacted, just add `.transacted()` after `using` and the transaction will be available for consumption in your lambda expression. Notice that you don't have to manage calls to `multi()` and `exec()`.
-```java
-final Result<String> request = new Result<>();
-new CommandBlock()
-        .using(jedisPool.getResource())
-        .transacted()
-        .consume(transaction -> {
-            request.wrapping(transaction.get("request"));
-        });	
-String compellingRequest = request.asOptional()
-        .orElse("Give me your extra resources") + "!";
-```
-
-If you want pipelines, just replace `transacted()` with `pipelined()`. If you want both, just add `pipelined()` and this complex chain of commands will run in a pipelined transaction:
+To make this command block transacted, just add `.transacted()`; to make it pipelined, use `pipelined()`. The same `GET` command, now running inside a transaction and pipeline (talk about overkill), would be:
 ```java
 final Result<String> request = new Result<>();
 new CommandBlock()
@@ -72,26 +27,26 @@ new CommandBlock()
 String compellingRequest = request.asOptional()
         .orElse("Give me your extra resources") + "!";
 ```
+Notice that `Result` is used instead of `Response`. Results are thin wrappers for a jedis `Response` or for output of non-multikey commands. For convenience, you can use typed results that converts redis output strings to primitive types:
 
-#### Retrieving results
-As seen before, the `call` method for plain commands returns the result of it's `Function` parameter. This is handy when you expect a single result, but if that isn't the case you can use the `Result` class. It can wrap not only jedis `Response`, but also regular commands output. Just remember to replace `call` by `consume`; it takes a `Consumer`, so you won't have to return anything inside your lambda expression:
 ```java
-final Result<String> request = new Result<>();
-final Result<Long> times = new Result<>();
+final Result<Boolean> someBooleanResult = new BooleanResult();
 new CommandBlock()
         .using(jedisPool.getResource())
-        .consume(jedis -> {
-            request.wrapping(jedis.get("request"));
-            times.wrapping(jedis.incrBy("times", 3));
-        });	
-String compellingRequest = request.asOptional()
-        .orElse("Give me your extra resources") + "!";
-String spam = Collections.nCopies(times.get().intValue(), compellingRequest)
-        .stream()
-        .collect(Collectors.joining("\n"));
+        .transacted()
+        .pipelined()
+        .consume(pipeline -> {
+            someBooleanResult.wrapping(pipeline.get("someBoolean"));
+        });
+try {
+    Boolean someBoolean = someBooleanResult.get(); // Result.get() returns null just like Response.get()
+} catch (ConversionException ex) {
+    // The key exists, but doesn't contain a valid boolean. Valid boolean is
+    // any string that equals, ignoring case, "true" or "false".
+}
 ```
 
-In transactions and pipelines, you also have access to a list containing all redis responses. This means that this:
+You also have access to a list containing all redis responses. This means that this:
 ```java
 List<Object> responses = new CommandBlock()
         .using(jedisPool.getResource())
@@ -103,7 +58,7 @@ List<Object> responses = new CommandBlock()
 ```java
 List<Object> responses;
 Response<List<Object>> execResponses;
-try (Jedis jedis = POOL.getResource()) {
+try (Jedis jedis = jedisPool.getResource()) {
     Pipeline pipeline = jedis.pipelined();
     pipeline.multi();
     // Code goes here
@@ -112,7 +67,3 @@ try (Jedis jedis = POOL.getResource()) {
 }
 responses = execResponses.get();
 ```
-
-## Plans for version 1
-* Support more commands in `TypedJedis`
-* Actual releases, including in maven central :)

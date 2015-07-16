@@ -1,5 +1,6 @@
 package com.andrepnh.jedis.utils.blocks;
 
+import com.andrepnh.jedis.utils.Result;
 import java.util.List;
 import static java.util.Objects.requireNonNull;
 import java.util.function.Consumer;

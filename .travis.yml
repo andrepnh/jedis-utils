@@ -1,0 +1,7 @@
+env:
+  global:
+    secure: F5BNjL4CVA8FyJnAxSo49xwh40nJlfFbuIERdQn1lU9NfVrprjI/2uLwgu6CFh9CsZHUo/xK3KGOKeNTWw/6eP+94a/eJpCp3Rj73IFgcBZrzHu33RG56IynNxWDvIHjuCC+hisDqS7VKJ6OsaEUv9p9mIV0iL6DsOba5Slj1VFc1z86GpPwdln3TlObZrZySiTsq/6l8Pe3YbQq9lgT17OI73sDKtzgmaBT3Ue8Jy5Yq0QzMZnVqr8xiIcqkNK5EK7O0ObQEpEOMLf2XkxtSPN2RuB/lz736+59aGnnE5QCmbrpGAv6hbYQ/SBzwJp+U2cFY/KluxoineNkZkLrYSk13M2amvL8hgmOmcOE54CK/pGEM33limNGbTgYfmWDDd7QTNSo8YQzxNFl/zf2HqNkXXcjmEdd5/ZCUNY/HUmLLBV9fLQ2rQZgUSBH6X1SZqEJvUAnERZ0fMAX8aVgTmgHkOBEQ5dfx98AF0EeBkkuxKotPmapn5BjCXBy9Isyp1iiejqwRphYSuIo9kjHLrcYkWoVG3Ef1GCUufZXnSAAS1sX/sBWLBinE1idjf9MyitvUhdjjj2U41yoYymzaQ4aB7NSsW2zHLmRQHskoxwwra9ih6WNez51aA1/rXETaRg9GWVdeWDUsoi3zRhof2cujELTX19jLEnorjrkYtM=
+before_install:
+- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in secring.gpg.enc -out local.secring.gpg -d
+- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in pubring.gpg.enc -out local.pubring.gpg -d
+- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in settings.xml.enc -out settings.xml -d
