@@ -176,5 +176,6 @@
         <connection>scm:git:git@github.com:andrepnh/jedis-utils.git</connection>
         <developerConnection>scm:git:git@github.com:andrepnh/jedis-utils.git</developerConnection>
         <url>git@github.com:andrepnh/jedis-utils.git</url>
+        <tag>HEAD</tag>
     </scm>
 </project>
