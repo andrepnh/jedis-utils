@@ -5,6 +5,8 @@ before_install:
   - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in secring.gpg.enc -out secring.gpg -d
   - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in pubring.gpg.enc -out pubring.gpg -d
   - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in settings.xml.enc -out settings.xml -d
+  - git config user.name "Maven Release"
+  - git config user.email "andrepnh@users.noreply.github.com"
 script: mvn release:clean release:prepare release:perform -B -e
 env:
   global:
