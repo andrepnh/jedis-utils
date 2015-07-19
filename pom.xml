@@ -70,6 +70,7 @@
     <profiles>
         <profile>
             <id>release</id>
+
             <build>
                 <plugins>
                     <plugin>
@@ -80,7 +81,7 @@
                             <execution>
                                 <id>attach-sources</id>
                                 <goals>
-                                    <goal>jar</goal>
+                                    <goal>jar-no-fork</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -105,7 +106,6 @@
                         <version>1.5</version>
                         <executions>
                             <execution>
-                                <phase>install</phase>
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
@@ -133,6 +133,17 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.5</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>sonatype-nexus-staging</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
             
@@ -150,6 +161,16 @@
     </profiles>
     
     <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}</directory>
+                <includes>
+                    <include>README*</include>
+                    <include>LICENSE*</include>
+                </includes>
+            </resource>
+        </resources>
+        
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -158,14 +179,31 @@
                     <compilerArgument>-Xlint:all</compilerArgument>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>
     </build>
     
     <scm>
-        <connection>scm:git:git@github.com:andrepnh/jedis-utils.git</connection>
+        <url>https://github.com/andrepnh/jedis-utils.git</url>
+        <connection>scm:git:git://github.com/andrepnh/jedis-utils.git</connection>
         <developerConnection>scm:git:git@github.com:andrepnh/jedis-utils.git</developerConnection>
-        <url>git@github.com:andrepnh/jedis-utils.git</url>
+        <tag>HEAD</tag>
     </scm>
+    
 </project>
