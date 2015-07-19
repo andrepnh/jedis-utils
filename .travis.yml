@@ -7,9 +7,8 @@ before_install:
   - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in settings.xml.enc -out settings.xml -d
   - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in jedis-util-github.enc -out jedis-util-github -d
   - cp settings.xml ~/.m2/settings.xml
-  - git config --global user.email "andrepnh@users.noreply.github.com"
-  - git config --global user.name "maven release plugin"
-script: mvn release:clean release:prepare release:perform -B -e
+script: 
+  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && mvn release:clean release:prepare release:perform -B -e || mvn test'
 env:
   global:
     - secure: PHBwk2zKCFaJSlDuSUq7rO2UWf3ZS/tgPtBalHkpWQWwPX3fnnvmC3NH3Sj9Y3V9FAR7GawzAqB2FG7Jw7yGZXmeq1UYEOAC9an2SSvle6djPIaarOG44vHyAuXLhBdZprxfMcZ+LXFcV9i/BpBWZJdoBSfrY6qTLIE+8NxH9Ycq0ZhvxhMR+1z00e4cyYjVhtkuys93uUDZdtRSqLo56/Lx1oEs9MawMjqhY+XgFKFP494x+ATasxvUG7dU8gLgNotFqakBGld2WEvvzw1IekxHopOwYNpzGKfFGlHohTFt+hP+gLHyw4X4avsSbMTGUs5H6dRUD+ihfsJThTceyPhFayTZ0+Le4c29rZl3IC+B/c/q7tY+lePY4AzyLXHgTLs+fIUYG3Ii+WoSjBBENDI2lRleyJTTzfk3j7kuNfmotUQnmWqD/tDO7cv8OrZNGF9cPG+iJfCWMGaccdHKQg9V7RcJ/zQNYTyhsCXb5Rp8kB6HayO11FiyEIqDtINBvVd/mal06MqQoqL02ZlYnMg+ToP9axkMFBd/OFjDNGvO7oYW9pO/m8etBQweuMnnJ4qmPNQjhpFTXSxtogbwzfkoIGr9HxQKH0Y4L5zHkxlMf6WKO2qRkjf/3j63MJ5jpQU2kHBMMlnq3NvTJYQVhi3ch0M9jZ640MR90S7uOVo=

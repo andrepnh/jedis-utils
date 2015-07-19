@@ -70,7 +70,9 @@
     <profiles>
         <profile>
             <id>release</id>
-
+            <properties>
+                <project.scm.id>github<project.scm.id>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
