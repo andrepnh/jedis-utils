@@ -7,6 +7,8 @@ before_install:
   - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in settings.xml.enc -out settings.xml -d
   - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in jedis-util-github.enc -out jedis-util-github -d
   - cp settings.xml ~/.m2/settings.xml
+  - git config --global user.email "andrepnh@users.noreply.github.com"
+  - git config --global user.name "maven release plugin"
 script: 
   - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && mvn release:clean release:prepare release:perform -B -e || mvn test'
 env:
