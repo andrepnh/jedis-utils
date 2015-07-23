@@ -2,16 +2,10 @@ language: java
 jdk:
   - oraclejdk8
 before_install:
-  - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in secring.gpg.enc -out secring.gpg -d
-  - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in pubring.gpg.enc -out pubring.gpg -d
-  - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in settings.xml.enc -out settings.xml -d
-  - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in jedis-util-github.enc -out jedis-util-github -d
-  - cp settings.xml ~/.m2/settings.xml
-  - ssh-add jedis-util-github
-  - git config --global user.email "andrepnh@users.noreply.github.com"
-  - git config --global user.name "maven release plugin"
+  - chmod u+x release-setup.sh
+  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && ./release-setup.sh || /bin/true'
 script: 
-  - 'chmod u+x release.sh'
+  - chmod u+x release.sh
   - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && ./release.sh || mvn test'
 env:
   global:
