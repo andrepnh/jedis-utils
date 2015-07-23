@@ -221,8 +221,8 @@
 
     <scm>
         <url>https://github.com/andrepnh/jedis-utils.git</url>
-        <connection>scm:git:git@github.com:andrepnh/jedis-utils.git</connection>
-        <developerConnection>scm:git:git@github.com:andrepnh/jedis-utils.git</developerConnection>
+        <connection>scm:git:ssh://github.com/andrepnh/jedis-utils.git</connection>
+        <developerConnection>scm:git:ssh://github.com/andrepnh/jedis-utils.git</developerConnection>
     </scm>
     
 </project>
