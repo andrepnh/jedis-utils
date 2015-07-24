@@ -215,5 +215,9 @@
             </plugin>
         </plugins>
     </build>
+
+    <scm>
+        <url>https://github.com/andrepnh/jedis-utils.git</url>
+    </scm>
     
 </project>
