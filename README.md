@@ -1,6 +1,15 @@
 # jedis-utils
 A tiny utility library for jedis, mainly designed to make it more fun on Java 8. It manages transactions and pipelines automatically and provides basic type conversion.
 
+## Setting up
+```xml
+<dependency>
+    <groupId>com.github.andrepnh</groupId>
+    <artifactId>jedis-utils</artifactId>
+    <version>1.0.1</version>
+</dependency>
+```
+
 ## Command blocks
 Command blocks are a way of grouping related commands in a single lambda expression. Commands inside a block can be refactored to run inside automatically managed transactions, pipelines or both.
 All command blocks take a `Jedis` instance and a `Consumer`. A simple command block, running outside transaction or pipelines, can take a `Function` if you wish to return values directly:
