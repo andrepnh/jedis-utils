@@ -1,5 +1,6 @@
 # jedis-utils
 A tiny utility library for jedis, mainly designed to make it more fun on Java 8. It manages transactions and pipelines automatically and provides basic type conversion.
+Personally, this project was used to play with publishing artifacts to the maven central.
 
 ## Setting up
 ```xml
